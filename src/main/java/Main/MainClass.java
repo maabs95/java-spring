@@ -25,14 +25,14 @@ public class MainClass {
     private static Map<String, UserData> userDataRepo = new HashMap<>();
     static {
         UserData user = new UserData();
-        user.setFirstName("Amirul");
-        user.setLastName("Aiman");
+        user.setFirstName("Joker");
+        user.setLastName("Hehehehe");
 
         userDataRepo.put(user.getFirstName(), user);
 
         user = new UserData();
-        user.setFirstName("Aida");
-        user.setLastName("Izzati");
+        user.setFirstName("Harley");
+        user.setLastName("Hohohoho");
 
         userDataRepo.put(user.getFirstName(), user);
     }
