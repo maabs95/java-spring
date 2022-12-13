@@ -25,16 +25,18 @@ public class MainClass {
     private static Map<String, UserData> userDataRepo = new HashMap<>();
     static {
         UserData user = new UserData();
-        user.setFirstName("Joker");
+        user.setUsername("admin");
+        user.setFirstName("Admin");
         user.setLastName("Hehehehe");
 
-        userDataRepo.put(user.getFirstName(), user);
+        userDataRepo.put(user.getUsername(), user);
 
         user = new UserData();
+        user.setUsername("harleyheh");
         user.setFirstName("Harley");
         user.setLastName("Hohohoho");
 
-        userDataRepo.put(user.getFirstName(), user);
+        userDataRepo.put(user.getUsername(), user);
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.GET)
@@ -44,11 +46,16 @@ public class MainClass {
 
     @RequestMapping(value = "/addUser", method = RequestMethod.POST)
     public ResponseEntity<Object> createUser(@RequestBody UserData userData){
+
+        if(userDataRepo.containsKey(userData.getUsername())){
+            return new ResponseEntity<>("{\"error\": \"Duplication is not allowed\"}", HttpStatus.FORBIDDEN);
+        }
+
         UserData user = new UserData();
+        user.setUsername(userData.getUsername());
         user.setFirstName(userData.getFirstName());
         user.setLastName(userData.getLastName());
-        userDataRepo.put(user.getFirstName(), user);
-        System.out.println(userData.getFirstName() + " // " + userData.getLastName());
+        userDataRepo.put(user.getUsername(), user);
         return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
     }
 
