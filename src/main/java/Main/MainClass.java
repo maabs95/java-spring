@@ -41,7 +41,7 @@ public class MainClass {
 
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ResponseEntity<Object> getUsers(){
-        System.out.println("Im inside get api");
+        System.out.println("Get userersfsd");
         return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
     }
 
@@ -70,7 +70,8 @@ public class MainClass {
     }
 
     @RequestMapping(value = "/deleteUser", method = RequestMethod.DELETE)
-    public ResponseEntity<Object> deleteUsers(){
+    public ResponseEntity<Object> deleteUsers(@RequestBody UserData userData){
+        System.out.println("username to be deleted: " + userData.getUsername());
         return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
     }
 }
