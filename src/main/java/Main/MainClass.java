@@ -41,6 +41,7 @@ public class MainClass {
 
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ResponseEntity<Object> getUsers(){
+        System.out.println("Im inside get api");
         return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
     }
 
@@ -65,6 +66,11 @@ public class MainClass {
         u.setUserData(userData.getUsername(), userData.getPassword(), userData.getFirstName(), userData.getLastName(), userData.getRole());
         userDataRepo = new HashMap<>();
         userDataRepo.put(u.getFirstName(), u);
+        return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/deleteUser", method = RequestMethod.DELETE)
+    public ResponseEntity<Object> deleteUsers(){
         return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
     }
 }
