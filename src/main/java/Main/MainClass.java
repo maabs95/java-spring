@@ -41,7 +41,6 @@ public class MainClass {
 
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ResponseEntity<Object> getUsers(){
-        System.out.println("Get userersfsd");
         return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
     }
 
@@ -60,6 +59,24 @@ public class MainClass {
         return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/editUser", method = RequestMethod.POST)
+    public ResponseEntity<Object> editUser(@RequestBody UserData userData){
+        HashMap<String,String> message = validateField(userData);
+        if(message != null){
+            return new ResponseEntity<>(message.values(), HttpStatus.FORBIDDEN);
+        }
+
+        if(userDataRepo.containsKey(userData.getUsername())){
+            UserData u = new UserData();
+            u.setUserData(userData.getUsername(), userData.getPassword(), userData.getFirstName(), userData.getLastName(), userData.getRole());
+            userDataRepo.put(u.getUsername(), u);
+        }
+
+
+        return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
+
+    }
+
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public ResponseEntity<Object> login(@RequestBody UserData userData){
         UserData u = new UserData();
@@ -73,5 +90,29 @@ public class MainClass {
     public ResponseEntity<Object> deleteUsers(@RequestBody UserData userData){
         System.out.println("username to be deleted: " + userData.getUsername());
         return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
+    }
+
+    private HashMap<String, String> validateField(UserData d){
+
+        HashMap<String,String> erroMessage = new HashMap<>();
+
+        if(!notEmpty(d.getUsername())){
+            erroMessage.put("username","Fill in username");
+        }
+
+        if(!notEmpty(d.getFirstName())){
+            erroMessage.put("firstname","Fill in first name");
+        }
+
+        if(!notEmpty(d.getLastName())){
+            erroMessage.put("lastname","Fill in lastname");
+        }
+
+
+        return null;
+    }
+
+    private boolean notEmpty(String value){
+        return value != null && !value.isEmpty();
     }
 }
