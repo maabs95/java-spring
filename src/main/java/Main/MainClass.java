@@ -44,6 +44,14 @@ public class MainClass {
         return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/getUserByUsername", method = RequestMethod.GET)
+    public ResponseEntity<Object> getUserByUsername(@RequestParam String username){
+        UserData u = userDataRepo.get(username);
+        Map<String, UserData> uRepo = new HashMap<>();
+        uRepo.put(u.getUsername(), u);
+        return new ResponseEntity<>(uRepo.values(), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/addUser", method = RequestMethod.POST)
     public ResponseEntity<Object> createUser(@RequestBody UserData userData){
 
