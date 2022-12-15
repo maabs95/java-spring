@@ -87,16 +87,13 @@ public class MainClass {
 
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public ResponseEntity<Object> login(@RequestBody UserData userData){
-        UserData u = new UserData();
-        u.setUserData(userData.getUsername(), userData.getPassword(), userData.getFirstName(), userData.getLastName(), userData.getRole());
-        userDataRepo = new HashMap<>();
-        userDataRepo.put(u.getFirstName(), u);
+        System.out.println("Logging in");
         return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/deleteUser", method = RequestMethod.DELETE)
-    public ResponseEntity<Object> deleteUsers(@RequestBody UserData userData){
-        System.out.println("username to be deleted: " + userData.getUsername());
+    public ResponseEntity<Object> deleteUsers(@RequestParam String username){
+        System.out.println("username to be deleted: " + username);
         return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
     }
 

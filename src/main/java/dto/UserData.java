@@ -7,6 +7,7 @@ public class UserData {
     private String firstName;
     private String lastName;
     private String role;
+    private String key;
 
     public void setUserData(String username, String password, String firstName, String lastName, String role){
         this.username = username;
@@ -54,5 +55,13 @@ public class UserData {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }
