@@ -1,4 +1,4 @@
-package dto;
+package main.dto;
 
 public class UserData {
 

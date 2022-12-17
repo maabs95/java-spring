@@ -1,26 +1,25 @@
-package Main;
+package main.controller;
 
-import controller.User;
-import dto.UserData;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.annotation.Resource;
+import main.database.QueryRepoMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
+import main.dto.UserData;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-@SpringBootApplication
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/v1")
-public class MainClass {
+public class User {
 
-    public static void main(String[] args) {
-        SpringApplication.run(MainClass.class, args);
-    }
+    @Resource(name="main.database.QueryRepoMapper")
+    QueryRepoMapper queryRepoMapper;
 
     private static Map<String, UserData> userDataRepo = new HashMap<>();
     static {
@@ -41,6 +40,11 @@ public class MainClass {
 
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ResponseEntity<Object> getUsers(){
+        List<UserData> getResult = queryRepoMapper.getUserList();
+        for(UserData u: getResult){
+            System.out.println("Username > " + u.getUsername());
+        }
+//        System.out.println(query.users());
         return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
     }
 
@@ -120,4 +124,5 @@ public class MainClass {
     private boolean notEmpty(String value){
         return value != null && !value.isEmpty();
     }
+
 }

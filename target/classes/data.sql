@@ -1,0 +1,2 @@
+INSERT INTO usertable(username,password,firstname,lastname,role) VALUES('admin','test1234','Ama','Roy','ADMIN');
+INSERT INTO usertable(username,password,firstname,lastname,role) VALUES('amoy','test1234','Amoy','Comel','User');
