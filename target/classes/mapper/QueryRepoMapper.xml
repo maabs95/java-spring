@@ -6,5 +6,23 @@
         SELECT * FROM usertable
     </select>
 
+    <select id="getUserByUsername" parameterType="java.lang.String" resultType="main.dto.UserData">
+        SELECT * FROM usertable WHERE username = #{param1}
+    </select>
+
+    <insert id="insertUser" parameterType="main.dto.UserData">
+        INSERT INTO usertable(username,password,firstname,lastname,role)
+        VALUES(#{username},#{password},#{firstname},#{lastname},#{role});
+    </insert>
+
+    <update id="updateUser" parameterType="main.dto.UserData">
+        UPDATE usertable
+        SET username=#{username},password=#{password},firstname=#{firstname},lastname=#{lastname},role=#{role}
+        WHERE username=#{username}
+    </update>
+
+    <delete id="deleteUser" parameterType="java.lang.String">
+        DELETE usertable WHERE username=#{param1}
+    </delete>
 
 </mapper>

@@ -2,10 +2,8 @@ package main.controller;
 
 import jakarta.annotation.Resource;
 import main.database.QueryRepoMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import main.dto.UserData;
 
@@ -21,84 +19,68 @@ public class User {
     @Resource(name="main.database.QueryRepoMapper")
     QueryRepoMapper queryRepoMapper;
 
-    private static Map<String, UserData> userDataRepo = new HashMap<>();
-    static {
-        UserData user = new UserData();
-        user.setUsername("admin");
-        user.setFirstName("Admin");
-        user.setLastName("Hehehehe");
-
-        userDataRepo.put(user.getUsername(), user);
-
-        user = new UserData();
-        user.setUsername("harleyheh");
-        user.setFirstName("Harley");
-        user.setLastName("Hohohoho");
-
-        userDataRepo.put(user.getUsername(), user);
-    }
+    private Map<String, UserData> returnValue = new HashMap<>();
 
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ResponseEntity<Object> getUsers(){
         List<UserData> getResult = queryRepoMapper.getUserList();
-        for(UserData u: getResult){
-            System.out.println("Username > " + u.getUsername());
-        }
-//        System.out.println(query.users());
-        return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
+        return new ResponseEntity<>(getResult, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/getUserByUsername", method = RequestMethod.GET)
     public ResponseEntity<Object> getUserByUsername(@RequestParam String username){
-        UserData u = userDataRepo.get(username);
-        Map<String, UserData> uRepo = new HashMap<>();
-        uRepo.put(u.getUsername(), u);
-        return new ResponseEntity<>(uRepo.values(), HttpStatus.OK);
+        return new ResponseEntity<>(queryRepoMapper.getUserByUsername(username), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/addUser", method = RequestMethod.POST)
     public ResponseEntity<Object> createUser(@RequestBody UserData userData){
 
-        if(userDataRepo.containsKey(userData.getUsername())){
-            return new ResponseEntity<>("{\"error\": \"Duplication is not allowed\"}", HttpStatus.FORBIDDEN);
+        UserData u = queryRepoMapper.getUserByUsername(userData.getUsername());
+        if(u != null && notEmpty(u.getUsername())){
+            return new ResponseEntity<>("{\"message\": \"Duplication is not allowed\"}", HttpStatus.FORBIDDEN);
         }
 
-        UserData user = new UserData();
-        user.setUsername(userData.getUsername());
-        user.setFirstName(userData.getFirstName());
-        user.setLastName(userData.getLastName());
-        userDataRepo.put(user.getUsername(), user);
-        return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
+        HashMap<String, String> validate = validateField(userData);
+        if(validate != null){
+            return new ResponseEntity<>(validate, HttpStatus.FORBIDDEN);
+        }
+
+        if(queryRepoMapper.insertUser(userData) != 1){
+            return new ResponseEntity<>("{\"message\": \"Error\"}", HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(userData, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/editUser", method = RequestMethod.POST)
     public ResponseEntity<Object> editUser(@RequestBody UserData userData){
         HashMap<String,String> message = validateField(userData);
         if(message != null){
-            return new ResponseEntity<>(message.values(), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
         }
 
-        if(userDataRepo.containsKey(userData.getUsername())){
-            UserData u = new UserData();
-            u.setUserData(userData.getUsername(), userData.getPassword(), userData.getFirstName(), userData.getLastName(), userData.getRole());
-            userDataRepo.put(u.getUsername(), u);
+        if(queryRepoMapper.updateUser(userData) != 1){
+            return new ResponseEntity<>("{\"message\": \"Error\"}", HttpStatus.BAD_REQUEST);
         }
 
-
-        return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
+        return new ResponseEntity<>(userData, HttpStatus.OK);
 
     }
-
-    @RequestMapping(value = "/login",method = RequestMethod.POST)
-    public ResponseEntity<Object> login(@RequestBody UserData userData){
-        System.out.println("Logging in");
-        return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
-    }
-
+//
+//    @RequestMapping(value = "/login",method = RequestMethod.POST)
+//    public ResponseEntity<Object> login(@RequestBody UserData userData){
+//        System.out.println("Logging in");
+//        return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
+//    }
+//
     @RequestMapping(value = "/deleteUser", method = RequestMethod.DELETE)
     public ResponseEntity<Object> deleteUsers(@RequestParam String username){
-        System.out.println("username to be deleted: " + username);
-        return new ResponseEntity<>(userDataRepo.values(), HttpStatus.OK);
+
+        if(queryRepoMapper.deleteUser(username) != 1){
+            return new ResponseEntity<>("{\"message\": \"Error\"}", HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>("{message: " + username + " deleted}", HttpStatus.OK);
     }
 
     private HashMap<String, String> validateField(UserData d){
@@ -109,11 +91,11 @@ public class User {
             erroMessage.put("username","Fill in username");
         }
 
-        if(!notEmpty(d.getFirstName())){
+        if(!notEmpty(d.getFirstname())){
             erroMessage.put("firstname","Fill in first name");
         }
 
-        if(!notEmpty(d.getLastName())){
+        if(!notEmpty(d.getLastname())){
             erroMessage.put("lastname","Fill in lastname");
         }
 
