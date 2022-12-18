@@ -37,9 +37,6 @@ public class UserController {
     private Map<String, UserData> returnValue = new HashMap<>();
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired

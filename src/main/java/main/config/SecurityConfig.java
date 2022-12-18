@@ -55,17 +55,17 @@ public class SecurityConfig{
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @Autowired
-    private CustomAuthentication customAuthentication;
+//    @Autowired
+//    private CustomAuthentication customAuthentication;
 
 //    @Autowired
 //    UserDetailsServiceImpl userDetailsService;
 
 
-  public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-//    authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-      authenticationManagerBuilder.authenticationProvider(customAuthentication);
-  }
+//  public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+////    authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+//      authenticationManagerBuilder.authenticationProvider(customAuthentication);
+//  }
 
 //    @Bean
 //    public DaoAuthenticationProvider authenticationProvider() {
@@ -83,15 +83,15 @@ public class SecurityConfig{
 //    return super.authenticationManagerBean();
 //  }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
-
 //    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
+//    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+//        return authConfig.getAuthenticationManager();
 //    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public JwtDecoder jwtDecoder() {
