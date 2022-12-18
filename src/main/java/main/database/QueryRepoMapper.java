@@ -1,5 +1,6 @@
 package main.database;
 
+import main.dto.UserPrincipal;
 import main.dto.UserData;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -17,6 +18,8 @@ public interface QueryRepoMapper {
     int updateUser(UserData userData);
 
     int deleteUser(@Param("username") String username);
+
+    UserPrincipal getUserAndPass(@Param("username") String username);
 
 }
 
