@@ -14,6 +14,7 @@ import java.util.Date;
 public class JwtUtils {
 
     //https://howtodoinjava.com/spring-security/custom-token-auth-example/
+    //https://www.bezkoder.com/spring-boot-jwt-authentication/
 
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
