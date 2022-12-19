@@ -1,2 +1,2 @@
-INSERT INTO usertable(username,password,firstname,lastname,role) VALUES('admin','test1234','Ama','Roy','ROLE_ADMIN');
+INSERT INTO usertable(username,password,firstname,lastname,role) VALUES('admin','test1234','Ama','Roy','ROLE_USER');
 INSERT INTO usertable(username,password,firstname,lastname,role) VALUES('amoy','test1234','Amoy','Comel','ROLE_USER');

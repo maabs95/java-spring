@@ -10,6 +10,7 @@ import main.database.QueryRepoMapper;
 import main.dto.UserData;
 import main.service.CustomAuthentication;
 import main.service.UserService;
+import main.utils.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,9 +37,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.util.ArrayList;
 
@@ -54,6 +57,9 @@ public class SecurityConfig{
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    AuthTokenFilter authTokenFilter;
 
 //    @Autowired
 //    private CustomAuthentication customAuthentication;
@@ -77,11 +83,10 @@ public class SecurityConfig{
 //        return authProvider;
 //    }
 
-//  @Bean
-//  @Override
-//  public AuthenticationManager authenticationManagerBean() throws Exception {
-//    return super.authenticationManagerBean();
-//  }
+//    @Bean
+//    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+//        return authenticationConfiguration.getAuthenticationManager();
+//    }
 
 //    @Bean
 //    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -118,10 +123,11 @@ public class SecurityConfig{
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v1/login","/v1/addUser","/v1/loggedInUser").permitAll()
                         .requestMatchers(HttpMethod.GET,"/v1/**").authenticated()
+                        .and().addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-                .httpBasic(Customizer.withDefaults())
+//                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+                .httpBasic(withDefaults())
                 .build();
     }
 

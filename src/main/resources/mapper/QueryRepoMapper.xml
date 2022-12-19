@@ -25,8 +25,8 @@
         DELETE usertable WHERE username=#{param1}
     </delete>
 
-    <select id="getUserAndPass">
-        SELECT username,password FROM usertable WHERE username = #{param1}
+    <select id="getUserAndPassAndRole">
+        SELECT username,password, role FROM usertable WHERE username = #{param1}
     </select>
 
 </mapper>

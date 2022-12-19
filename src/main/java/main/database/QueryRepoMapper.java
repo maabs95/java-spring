@@ -19,7 +19,7 @@ public interface QueryRepoMapper {
 
     int deleteUser(@Param("username") String username);
 
-    UserPrincipal getUserAndPass(@Param("username") String username);
+    UserPrincipal getUserAndPassAndRole(@Param("username") String username);
 
 }
 

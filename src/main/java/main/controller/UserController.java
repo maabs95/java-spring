@@ -3,7 +3,10 @@ package main.controller;
 import jakarta.annotation.Resource;
 import main.config.SecurityConfig;
 import main.database.QueryRepoMapper;
+import main.dto.UserPrincipal;
 import main.service.CustomAuthentication;
+import main.service.UserService;
+import main.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.*;
@@ -23,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -42,6 +47,9 @@ public class UserController {
     @Autowired
     private CustomAuthentication customAuthentication;
 
+    @Autowired
+    JwtUtils jwtUtils;
+
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public ResponseEntity<Object> login(@RequestBody UserData userData) throws Exception{
 
@@ -50,17 +58,24 @@ public class UserController {
             authObject = customAuthentication.authenticate(new UsernamePasswordAuthenticationToken(userData.getUsername(),userData.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authObject);
 
-            System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
+//            SecurityContextHolder.getContext().setAuthentication(authObject);
+            String jwt = jwtUtils.generateJwtToken(authObject);
 //            var claims =
 //                    JwtClaimsSet.builder()
 //                            .issuer("example.io")
 //                            .subject(format("%s,%s", user.getUsername()))
 //                            .build();
 
+//            UserPrincipal userPrincipal = (UserPrincipal) authObject;
+
+            List<String> roles = authObject.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority).toList();
+
             return ResponseEntity.ok()
-                    .header(HttpHeaders.AUTHORIZATION, "sdfsgsdghergwrger")
-                    .body("{message: logged in}");
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)
+                    .body("{\"username\":\"" + authObject.getPrincipal() + "\""
+                            + "\"role\":" + roles + "\""
+                    );
 
         } catch (BadCredentialsException e){
             return new ResponseEntity<>("{message:Wrong Credential}", HttpStatus.UNAUTHORIZED);

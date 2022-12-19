@@ -1,6 +1,7 @@
 package main.utils;
 
 import main.dto.UserData;
+import main.dto.UserPrincipal;
 import main.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,13 +20,13 @@ public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
     private String jwtSecret = "hehehe";
-    private int expiration = 3500;
+    private int expiration = 900_000;
     public String generateJwtToken(Authentication authentication) {
 
-        UserData userPrincipal = (UserData) authentication.getPrincipal();
+//        UserPrincipal userPrincipal = (UserPrincipal) authentication;
 
         return Jwts.builder()
-                .setSubject((userPrincipal.getUsername()))
+                .setSubject((String) authentication.getPrincipal())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + expiration))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
