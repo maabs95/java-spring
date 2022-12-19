@@ -126,7 +126,7 @@ public class SecurityConfig{
                         .and().addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+//                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt) // commented due to different decoder/encoder
                 .httpBasic(withDefaults())
                 .build();
     }
