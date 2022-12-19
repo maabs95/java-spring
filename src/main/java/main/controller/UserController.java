@@ -73,8 +73,7 @@ public class UserController {
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)
-                    .body("{\"username\":\"" + authObject.getPrincipal() + "\""
-                            + "\"role\":" + roles + "\""
+                    .body("{\"username\":\"" + authObject.getPrincipal() + "\"}"
                     );
 
         } catch (BadCredentialsException e){
@@ -96,7 +95,7 @@ public class UserController {
     @RequestMapping(value="/loggedInUser", method = RequestMethod.GET)
     public ResponseEntity<Object> loggedInUser(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return new ResponseEntity<>(auth.getPrincipal(), HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(auth.getPrincipal(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/addUser", method = RequestMethod.POST)

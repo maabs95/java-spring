@@ -121,8 +121,9 @@ public class SecurityConfig{
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v1/login","/v1/addUser","/v1/loggedInUser").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/v1/**").authenticated()
+                        .requestMatchers("/v1/login","/v1/loggedInUser").permitAll()
+                        .requestMatchers("/v1/addUser","/v1//editUser","/v1/deleteUser").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/v1/**", "/**").authenticated()
                         .and().addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
