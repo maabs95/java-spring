@@ -40,17 +40,19 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
 //            boolean validate = jwtUtils.validateJwtToken(bearer);
 
-            if(bearer != null && jwtUtils.validateJwtToken(bearer)){
-                String username = jwtUtils.getUserNameFromJwtToken(bearer);
+//            if(!jwtUtils.expiredJwtToken(bearer)) {
+                if (bearer != null && jwtUtils.validateJwtToken(bearer)) {
+                    String username = jwtUtils.getUserNameFromJwtToken(bearer);
 
-                UserPrincipal userPrincipal = (UserPrincipal) userService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userPrincipal, null, userPrincipal.getAuthorities());
-                usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                    UserPrincipal userPrincipal = (UserPrincipal) userService.loadUserByUsername(username);
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userPrincipal, null, userPrincipal.getAuthorities());
+                    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
-            }
+                }
+//            }
 
         } catch (Exception e){
             e.printStackTrace();

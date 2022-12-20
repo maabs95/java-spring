@@ -10,6 +10,7 @@ import main.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/v1")
 public class UserController {
@@ -58,7 +59,6 @@ public class UserController {
             authObject = customAuthentication.authenticate(new UsernamePasswordAuthenticationToken(userData.getUsername(),userData.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authObject);
 
-//            SecurityContextHolder.getContext().setAuthentication(authObject);
             String jwt = jwtUtils.generateJwtToken(authObject);
 //            var claims =
 //                    JwtClaimsSet.builder()
@@ -68,12 +68,14 @@ public class UserController {
 
 //            UserPrincipal userPrincipal = (UserPrincipal) authObject;
 
-            List<String> roles = authObject.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority).toList();
+//            List<String> roles = authObject.getAuthorities().stream()
+//                    .map(GrantedAuthority::getAuthority).toList();
 
-            return ResponseEntity.ok()
+            return ResponseEntity.ok().contentType(MediaType.valueOf("application/json"))
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)
-                    .body("{\"username\":\"" + authObject.getPrincipal() + "\"}"
+//                    .header("Access-Control-Allow-Origin","http://localhost:3000")
+                    .body("{\"username\":\"" + authObject.getPrincipal() + "\","
+                            + "\"Authorization\":\"" + jwt + "\"}"
                     );
 
         } catch (BadCredentialsException e){
@@ -89,13 +91,28 @@ public class UserController {
 
     @RequestMapping(value = "/getUserByUsername", method = RequestMethod.GET)
     public ResponseEntity<Object> getUserByUsername(@RequestParam String username){
-        return new ResponseEntity<>(queryRepoMapper.getUserByUsername(username), HttpStatus.OK);
+        UserData u = queryRepoMapper.getUserByUsername(username);
+        return new ResponseEntity<>(
+                "{\"username\":\"" + u.getUsername() + "\","
+                        + "\"firstname\":\"" + u.getFirstname() + "\","
+                        + "\"lastname\":\"" + u.getLastname() + "\","
+                        + "\"role\":\"" + u.getRole() + "\","
+                        + "\"email\":\"" + u.getEmail() + "\""
+                        + "}", HttpStatus.OK);
     }
 
     @RequestMapping(value="/loggedInUser", method = RequestMethod.GET)
     public ResponseEntity<Object> loggedInUser(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return new ResponseEntity<>(auth.getPrincipal(), HttpStatus.OK);
+        if(auth.getPrincipal() == "anonymousUser") return new ResponseEntity<>("{\"message\":\"false\"}", HttpStatus.UNAUTHORIZED);
+
+        UserPrincipal u = (UserPrincipal) auth.getPrincipal();
+        UserData userData = u.getUserData();
+
+        return ResponseEntity.ok().contentType(MediaType.valueOf("application/json"))
+//                .header("Access-Control-Allow-Origin","http://localhost:3000")
+                .body("{\"role\":\"" + userData.getRole()  + "\"}"
+                );
     }
 
     @RequestMapping(value = "/addUser", method = RequestMethod.POST)
@@ -107,7 +124,7 @@ public class UserController {
         }
 
         HashMap<String, String> validate = validateField(userData);
-        if(validate != null){
+        if(!validate.isEmpty()){
             return new ResponseEntity<>(validate, HttpStatus.FORBIDDEN);
         }
 
@@ -128,13 +145,13 @@ public class UserController {
             String username = principal.toString();
         }
 
-        return new ResponseEntity<>(userData, HttpStatus.CREATED);
+        return new ResponseEntity<>("{\"message\":\"Created\"}", HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/editUser", method = RequestMethod.POST)
     public ResponseEntity<Object> editUser(@RequestBody UserData userData){
         HashMap<String,String> message = validateField(userData);
-        if(message != null){
+        if(!message.isEmpty()){
             return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
         }
 
@@ -146,7 +163,7 @@ public class UserController {
             return new ResponseEntity<>("{\"message\": \"Error\"}", HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(userData, HttpStatus.OK);
+        return new ResponseEntity<>("{\"message\":\"Updated\"}", HttpStatus.OK);
 
     }
 
@@ -156,6 +173,13 @@ public class UserController {
         if(queryRepoMapper.deleteUser(username) != 1){
             return new ResponseEntity<>("{\"message\": \"Error\"}", HttpStatus.BAD_REQUEST);
         }
+
+        return new ResponseEntity<>("{message: " + username + " deleted}", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/deleteBulk", method = RequestMethod.DELETE)
+    public ResponseEntity<Object> deleteUsersBulk(@RequestParam String username){
+        System.out.println(username);
 
         return new ResponseEntity<>("{message: " + username + " deleted}", HttpStatus.OK);
     }
@@ -176,8 +200,11 @@ public class UserController {
             erroMessage.put("lastname","Fill in lastname");
         }
 
+        if(!notEmpty(d.getEmail())){
+            erroMessage.put("email","Fill in email");
+        }
 
-        return null;
+        return erroMessage;
     }
 
     private boolean notEmpty(String value){

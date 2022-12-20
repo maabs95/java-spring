@@ -3,7 +3,7 @@
 <mapper namespace="main.database.QueryRepoMapper">
 
     <select id="getUserList" resultType="main.dto.UserData">
-        SELECT * FROM usertable
+        SELECT username,firstname,lastname,email,role FROM usertable
     </select>
 
     <select id="getUserByUsername" parameterType="java.lang.String" resultType="main.dto.UserData">
@@ -11,8 +11,8 @@
     </select>
 
     <insert id="insertUser" parameterType="main.dto.UserData">
-        INSERT INTO usertable(username,password,firstname,lastname,role)
-        VALUES(#{username},#{password},#{firstname},#{lastname},#{role});
+        INSERT INTO usertable(username,password,firstname,lastname,role,email)
+        VALUES(#{username},#{password},#{firstname},#{lastname},#{role},#{email});
     </insert>
 
     <update id="updateUser" parameterType="main.dto.UserData">

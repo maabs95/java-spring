@@ -20,7 +20,7 @@ public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
     private String jwtSecret = "hehehe";
-    private int expiration = 900_000;
+    private int expiration = 900000;
     public String generateJwtToken(Authentication authentication) {
 
 //        UserPrincipal userPrincipal = (UserPrincipal) authentication;
@@ -35,6 +35,11 @@ public class JwtUtils {
 
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public boolean expiredJwtToken(String token){
+        Date expiryDate = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getExpiration();
+        return expiryDate.before(new Date());
     }
 
     public boolean validateJwtToken(String authToken) {

@@ -41,9 +41,14 @@ import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static java.lang.String.format;
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -117,13 +122,27 @@ public class SecurityConfig{
 
 
     @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
+        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PUT","OPTIONS","PATCH", "DELETE"));
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setExposedHeaders(List.of("Authorization"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return source;
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> corsConfigurationSource())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v1/login","/v1/loggedInUser").permitAll()
-                        .requestMatchers("/v1/addUser","/v1//editUser","/v1/deleteUser").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET,"/v1/**", "/**").authenticated()
+                        .requestMatchers("/v1/login").permitAll()
+                        .requestMatchers("/v1/addUser","/v1/editUser","/v1/deleteUser","/v1/deleteBulk").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/v1/**").authenticated()
                         .and().addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

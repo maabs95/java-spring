@@ -9,6 +9,8 @@ public class UserData {
     private String role;
     private String key;
 
+    private String email;
+
     public void setUserData(String username, String password, String firstName, String lastName, String role){
         this.username = username;
         this.password = password;
@@ -63,5 +65,13 @@ public class UserData {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
