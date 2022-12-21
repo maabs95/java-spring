@@ -40,8 +40,6 @@ public class UserController {
     @Resource(name="main.database.QueryRepoMapper")
     QueryRepoMapper queryRepoMapper;
 
-    private Map<String, UserData> returnValue = new HashMap<>();
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -155,9 +153,9 @@ public class UserController {
             return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
         }
 
-        String password = userData.getPassword();
-        password = passwordEncoder.encode(password);
-        userData.setPassword(password);
+//        String password = userData.getPassword();
+//        password = passwordEncoder.encode(password);
+//        userData.setPassword(password);
 
         if(queryRepoMapper.updateUser(userData) != 1){
             return new ResponseEntity<>("{\"message\": \"Error\"}", HttpStatus.BAD_REQUEST);
@@ -177,6 +175,7 @@ public class UserController {
         return new ResponseEntity<>("{message: " + username + " deleted}", HttpStatus.OK);
     }
 
+    /** WORK IN PROGRESS **/
     @RequestMapping(value = "/deleteBulk", method = RequestMethod.DELETE)
     public ResponseEntity<Object> deleteUsersBulk(@RequestParam String username){
         System.out.println(username);

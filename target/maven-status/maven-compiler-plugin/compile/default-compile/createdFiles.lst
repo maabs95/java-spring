@@ -1,0 +1,10 @@
+main\MainClass.class
+main\database\QueryRepoMapper.class
+main\config\SecurityConfig.class
+main\service\UserService.class
+main\utils\JwtUtils.class
+main\controller\UserController.class
+main\utils\AuthTokenFilter.class
+main\service\CustomAuthentication.class
+main\dto\UserData.class
+main\dto\UserPrincipal.class
