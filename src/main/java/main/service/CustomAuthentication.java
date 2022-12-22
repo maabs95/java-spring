@@ -29,6 +29,7 @@ public class CustomAuthentication implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
+        System.out.println("pass");
 
         UserData userData = queryRepoMapper.getUserByUsername(username);
         if(queryRepoMapper.getUserByUsername(username) == null){
