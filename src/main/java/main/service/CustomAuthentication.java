@@ -23,7 +23,7 @@ public class CustomAuthentication implements AuthenticationProvider {
 
     @Autowired
     PasswordEncoder passwordEncoder;
-
+ww
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
