@@ -6,11 +6,9 @@ import main.dto.UserData;
 import main.service.CustomAuthentication;
 import main.utils.JwtUtils;
 import org.h2.engine.User;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -49,7 +47,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 //        (
 //        properties = "spring.main.lazy-initialization=true",
@@ -61,11 +59,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //@ContextConfiguration
 //@ExtendWith(SpringExtension.class)
 //@Import(QueryRepoMapper.class)
-class UserControllerTest {
+public class UserControllerTest
+//        extends BlockJUnit4ClassRunner
+{
 
     /**
-     * For this test, I have problems setting up some tests. Hence, I ignore it for the time being due to time constraint
+     * For this test, I have problems setting up some tests. Hence, I will skip it for the time being due to time constraint
      * **/
+
+    public UserControllerTest(){}
 
     @Autowired
     private MockMvc mvc;
@@ -76,36 +78,14 @@ class UserControllerTest {
     @Mock
     private CustomAuthentication customAuthentication;
 
-    @Mock
-    UserController userController;
+//    @Mock
+//    UserController userController;
 
     @Mock
     JwtUtils jwtUtils;
 
-    private static HashMap<String, UserData> mockUsers = new HashMap<>();
-    static {
-        UserData mockUser1 = new UserData();
-        mockUser1.setUsername("admin");
-        mockUser1.setFirstname("Admin");
-        mockUser1.setLastname("Testing");
-        mockUser1.setPassword("$2a$10$8OUlK1DSGH042U1qq5EvueRSa5LEb1eKKAcmLFeQsxFegPmyd74yq");
-        mockUser1.setEmail("admin@test.com");
-        mockUser1.setRole("ROLE_ADMIN");
-        mockUsers.put(mockUser1.getUsername(), mockUser1);
-
-        UserData mockUser2 = new UserData();
-        mockUser2.setUsername("amoy");
-        mockUser2.setFirstname("Peasant");
-        mockUser2.setLastname("Testing");
-        mockUser2.setPassword("$2a$10$8OUlK1DSGH042U1qq5EvueRSa5LEb1eKKAcmLFeQsxFegPmyd74yq");
-        mockUser2.setEmail("peasant@test.com");
-        mockUser2.setRole("ROLE_USER");
-        mockUsers.put(mockUser2.getUsername(), mockUser2);
-
-    }
-
     @BeforeEach
-    public void setUp(
+    public void setup(
 //            WebApplicationContext wac
     ) throws Exception {
 //        mvc = MockMvcBuilders
@@ -116,9 +96,31 @@ class UserControllerTest {
         this.mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
+//    private final HashMap<String, UserData> mockUsers = new HashMap<>();
+//    {
+//        UserData mockUser1 = new UserData();
+//        mockUser1.setUsername("admin");
+//        mockUser1.setFirstname("Admin");
+//        mockUser1.setLastname("Testing");
+//        mockUser1.setPassword("$2a$10$8OUlK1DSGH042U1qq5EvueRSa5LEb1eKKAcmLFeQsxFegPmyd74yq");
+//        mockUser1.setEmail("admin@test.com");
+//        mockUser1.setRole("ROLE_ADMIN");
+//        mockUsers.put(mockUser1.getUsername(), mockUser1);
+//
+//        UserData mockUser2 = new UserData();
+//        mockUser2.setUsername("amoy");
+//        mockUser2.setFirstname("Peasant");
+//        mockUser2.setLastname("Testing");
+//        mockUser2.setPassword("$2a$10$8OUlK1DSGH042U1qq5EvueRSa5LEb1eKKAcmLFeQsxFegPmyd74yq");
+//        mockUser2.setEmail("peasant@test.com");
+//        mockUser2.setRole("ROLE_USER");
+//        mockUsers.put(mockUser2.getUsername(), mockUser2);
+//
+//    }
+
     /** WORK IN PROGRESS **/
-//    @Test
-//    void loginApi() throws Exception {
+    @Test
+    void loginApi() throws Exception {
 //        UserData u = mockUsers.get("admin");
 //        MvcResult result = mvc.perform( MockMvcRequestBuilders
 //                        .post("/v1/login")
@@ -131,10 +133,32 @@ class UserControllerTest {
 //
 //        System.out.println("test response");
 //        System.out.println(result.getResponse().getContentAsString());
-//    }
+    }
 
     @Test
     void getUsers_ByAdmin() throws Exception {
+
+        HashMap<String, UserData> mockUsers = new HashMap<>();
+        {
+            UserData mockUser1 = new UserData();
+            mockUser1.setUsername("admin");
+            mockUser1.setFirstname("Admin");
+            mockUser1.setLastname("Testing");
+            mockUser1.setPassword("$2a$10$8OUlK1DSGH042U1qq5EvueRSa5LEb1eKKAcmLFeQsxFegPmyd74yq");
+            mockUser1.setEmail("admin@test.com");
+            mockUser1.setRole("ROLE_ADMIN");
+            mockUsers.put(mockUser1.getUsername(), mockUser1);
+
+            UserData mockUser2 = new UserData();
+            mockUser2.setUsername("amoy");
+            mockUser2.setFirstname("Peasant");
+            mockUser2.setLastname("Testing");
+            mockUser2.setPassword("$2a$10$8OUlK1DSGH042U1qq5EvueRSa5LEb1eKKAcmLFeQsxFegPmyd74yq");
+            mockUser2.setEmail("peasant@test.com");
+            mockUser2.setRole("ROLE_USER");
+            mockUsers.put(mockUser2.getUsername(), mockUser2);
+
+        }
 
         UserData u = mockUsers.get("admin");
         Authentication authObject = customAuthentication.authenticate(new UsernamePasswordAuthenticationToken(u.getUsername(),u.getPassword()));
@@ -151,6 +175,29 @@ class UserControllerTest {
 
     @Test
     void getUserByUsername_ByAdmin() throws Exception {
+
+        HashMap<String, UserData> mockUsers = new HashMap<>();
+        {
+            UserData mockUser1 = new UserData();
+            mockUser1.setUsername("admin");
+            mockUser1.setFirstname("Admin");
+            mockUser1.setLastname("Testing");
+            mockUser1.setPassword("$2a$10$8OUlK1DSGH042U1qq5EvueRSa5LEb1eKKAcmLFeQsxFegPmyd74yq");
+            mockUser1.setEmail("admin@test.com");
+            mockUser1.setRole("ROLE_ADMIN");
+            mockUsers.put(mockUser1.getUsername(), mockUser1);
+
+            UserData mockUser2 = new UserData();
+            mockUser2.setUsername("amoy");
+            mockUser2.setFirstname("Peasant");
+            mockUser2.setLastname("Testing");
+            mockUser2.setPassword("$2a$10$8OUlK1DSGH042U1qq5EvueRSa5LEb1eKKAcmLFeQsxFegPmyd74yq");
+            mockUser2.setEmail("peasant@test.com");
+            mockUser2.setRole("ROLE_USER");
+            mockUsers.put(mockUser2.getUsername(), mockUser2);
+
+        }
+
         UserData u = mockUsers.get("admin");
         Authentication authObject = customAuthentication.authenticate(new UsernamePasswordAuthenticationToken(u.getUsername(),u.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authObject);
@@ -163,8 +210,8 @@ class UserControllerTest {
     }
 
     /** WORK IN PROGRESS **/
-//    @Test
-//    void loggedInUser() throws Exception {
+    @Test
+    void loggedInUser() throws Exception {
 //        UserData u = mockUsers.get("admin");
 //        Authentication authObject = customAuthentication.authenticate(new UsernamePasswordAuthenticationToken(u.getUsername(),u.getPassword()));
 //        SecurityContextHolder.getContext().setAuthentication(authObject);
@@ -176,15 +223,38 @@ class UserControllerTest {
 //                        .contentType(MediaType.APPLICATION_JSON)
 //                        .accept(MediaType.APPLICATION_JSON))
 //                .andExpect(status().isOk());
-//    }
+    }
 
     /** WORK IN PROGRESS **/
-//    @org.junit.jupiter.api.Test
-//    void createUser() {
-//    }
+    @Test
+    void createUser() {
+    }
 
     @Test
     void editUser_ByAdmin() throws Exception {
+
+        HashMap<String, UserData> mockUsers = new HashMap<>();
+        {
+            UserData mockUser1 = new UserData();
+            mockUser1.setUsername("admin");
+            mockUser1.setFirstname("Admin");
+            mockUser1.setLastname("Testing");
+            mockUser1.setPassword("$2a$10$8OUlK1DSGH042U1qq5EvueRSa5LEb1eKKAcmLFeQsxFegPmyd74yq");
+            mockUser1.setEmail("admin@test.com");
+            mockUser1.setRole("ROLE_ADMIN");
+            mockUsers.put(mockUser1.getUsername(), mockUser1);
+
+            UserData mockUser2 = new UserData();
+            mockUser2.setUsername("amoy");
+            mockUser2.setFirstname("Peasant");
+            mockUser2.setLastname("Testing");
+            mockUser2.setPassword("$2a$10$8OUlK1DSGH042U1qq5EvueRSa5LEb1eKKAcmLFeQsxFegPmyd74yq");
+            mockUser2.setEmail("peasant@test.com");
+            mockUser2.setRole("ROLE_USER");
+            mockUsers.put(mockUser2.getUsername(), mockUser2);
+
+        }
+
         UserData u = mockUsers.get("admin");
         Authentication authObject = customAuthentication.authenticate(new UsernamePasswordAuthenticationToken(u.getUsername(),u.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authObject);
@@ -204,6 +274,29 @@ class UserControllerTest {
 
     @Test
     void deleteUsers_ByAdmin() throws Exception {
+
+        HashMap<String, UserData> mockUsers = new HashMap<>();
+        {
+            UserData mockUser1 = new UserData();
+            mockUser1.setUsername("admin");
+            mockUser1.setFirstname("Admin");
+            mockUser1.setLastname("Testing");
+            mockUser1.setPassword("$2a$10$8OUlK1DSGH042U1qq5EvueRSa5LEb1eKKAcmLFeQsxFegPmyd74yq");
+            mockUser1.setEmail("admin@test.com");
+            mockUser1.setRole("ROLE_ADMIN");
+            mockUsers.put(mockUser1.getUsername(), mockUser1);
+
+            UserData mockUser2 = new UserData();
+            mockUser2.setUsername("amoy");
+            mockUser2.setFirstname("Peasant");
+            mockUser2.setLastname("Testing");
+            mockUser2.setPassword("$2a$10$8OUlK1DSGH042U1qq5EvueRSa5LEb1eKKAcmLFeQsxFegPmyd74yq");
+            mockUser2.setEmail("peasant@test.com");
+            mockUser2.setRole("ROLE_USER");
+            mockUsers.put(mockUser2.getUsername(), mockUser2);
+
+        }
+
         UserData u = mockUsers.get("admin");
         Authentication authObject = customAuthentication.authenticate(new UsernamePasswordAuthenticationToken(u.getUsername(),u.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authObject);
