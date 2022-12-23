@@ -1,5 +1,5 @@
 Hi, this is a simple user api, able to register new user, edit user, view user and delete user depending on roles (admin / user). 
-It is still work in progress (especially the test unit) and I will tidy up the source codes from time to time. 
+It is still work in progress (especially the test class) and I will tidy up the source codes from time to time. 
 The pre-commit test is currently on my local. Will try to apply the pre-commit test in the .xml file.
 
 Technology used:
