@@ -1,4 +1,4 @@
-Hi, this is a simple user api, able to get, post and delete. 
+Hi, this is a simple user api, able to register new user, edit user, view user and delete user depending on roles (admin / user). 
 It is still work in progress (especially the test unit) and I will tidy up the source codes from time to time.
 
 Technology used:
