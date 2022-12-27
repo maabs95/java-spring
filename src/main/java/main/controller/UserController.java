@@ -57,6 +57,7 @@ public class UserController {
             authObject = customAuthentication.authenticate(new UsernamePasswordAuthenticationToken(userData.getUsername(),userData.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authObject);
 
+            UserData u = queryRepoMapper.getUserByUsername(userData.getUsername());
             String jwt = jwtUtils.generateJwtToken(authObject);
 //            var claims =
 //                    JwtClaimsSet.builder()
@@ -72,7 +73,7 @@ public class UserController {
             return ResponseEntity.ok().contentType(MediaType.valueOf("application/json"))
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)
 //                    .header("Access-Control-Allow-Origin","http://localhost:3000")
-                    .body("{\"username\":\"" + authObject.getPrincipal() + "\","
+                    .body("{\"role\":\"" + u.getRole() + "\","
                             + "\"Authorization\":\"" + jwt + "\"}"
                     );
 

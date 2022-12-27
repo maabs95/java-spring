@@ -17,7 +17,7 @@
 
     <update id="updateUser" parameterType="main.dto.UserData">
         UPDATE usertable
-        SET username=#{username},firstname=#{firstname},lastname=#{lastname},role=#{role}
+        SET username=#{username},firstname=#{firstname},lastname=#{lastname},role=#{role},email=#{email}
         WHERE username=#{username}
     </update>
 
