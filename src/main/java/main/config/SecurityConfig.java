@@ -141,7 +141,7 @@ public class SecurityConfig{
                 .cors(cors -> corsConfigurationSource())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v1/login").permitAll()
-                        .requestMatchers("/v1/addUser","/v1/editUser","/v1/deleteUser","/v1/deleteBulk").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/v1/addUser","/v1/editUser","/v1/deleteUser","/v1/deleteBulk","/v1/user").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.GET,"/v1/**").authenticated()
                         .and().addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 )
