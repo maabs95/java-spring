@@ -29,4 +29,8 @@
         SELECT username,password, role FROM usertable WHERE username = #{param1}
     </select>
 
+    <select id="getUserListPagination" resultType="main.dto.UserData">
+        SELECT username,firstname,lastname,email,role FROM usertable
+    </select>
+
 </mapper>
