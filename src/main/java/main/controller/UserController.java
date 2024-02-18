@@ -184,6 +184,15 @@ public class UserController {
         return new ResponseEntity<>("{message: " + username + " deleted}", HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/getEncodedPassword", method = RequestMethod.POST)
+    public ResponseEntity<Object> getEncodedPassword(@RequestBody UserData userData){
+
+        String password = userData.getPassword();
+        password = passwordEncoder.encode(password);
+
+        return new ResponseEntity<>("{\"encoded password\":\"" + password + "\"}", HttpStatus.OK);
+    }
+
     private HashMap<String, String> validateField(UserData d){
 
         HashMap<String,String> erroMessage = new HashMap<>();
