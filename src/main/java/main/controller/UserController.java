@@ -19,10 +19,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.*;
+//import org.springframework.security.oauth2.jwt.*;
 import org.springframework.web.bind.annotation.*;
 import main.dto.UserData;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
+//import org.springframework.security.oauth2.jwt.JwtEncoder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
